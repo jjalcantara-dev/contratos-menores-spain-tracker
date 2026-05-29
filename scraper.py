@@ -39,7 +39,7 @@ FECHA_DESDE   = f"01-01-{date.today().year}"
 SPREADSHEET_ID = os.environ.get("SPREADSHEET_ID")
 if not SPREADSHEET_ID:
     raise EnvironmentError("Variable SPREADSHEET_ID no definida.")
-SHEET_NAME    = "Contratos"
+SHEET_NAME    = f"Contratos {date.today().year}"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -105,7 +105,7 @@ def escribir_en_sheets(ws, ranking, total_global, paginas_con_error):
     todas = meta + [[]] + cabecera + filas_datos + [[]] + fila_total
 
     ws.clear()
-    ws.update("A1", todas, value_input_option="USER_ENTERED")
+    ws.update(values=todas, range_name="A1", value_input_option="USER_ENTERED")
     log.info(f"Hoja actualizada: {len(ranking)} adjudicatarios — {total_global:,.2f} €")
 
 # ---------------------------------------------------------------------------

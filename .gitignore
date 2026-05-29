@@ -1,0 +1,15 @@
+# Credenciales — nunca subir
+*.json
+.env
+
+# Salidas locales
+output/
+*.xlsx
+*.csv
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/

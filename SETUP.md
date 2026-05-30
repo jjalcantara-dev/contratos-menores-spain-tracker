@@ -34,19 +34,18 @@ con todos los contratos del año en curso. Sin duplicados, sin intervención man
 
 ---
 
-## Paso 3 — Subir el repo a GitHub
+## Paso 3 — Obtener el código en GitHub
 
-```bash
-cd /home/jesus/Documentos/Github/Selenium/contratos_menores_velez_malaga
-git init
-git add .
-git commit -m "Añadir automation con GitHub Actions"
-# Crea el repo en github.com y luego:
-git remote add origin https://github.com/TU_USUARIO/contratos-menores-velez.git
-git push -u origin main
-```
+No necesitas descargar nada ni tocar código. Haz un **fork** de este repositorio:
 
-> El repo puede ser **privado** (tienes 2000 min/mes gratis) o **público** (ilimitado).
+1. Si no tienes cuenta en GitHub, créate una en [github.com](https://github.com) (es gratis)
+2. Entra en la página del repositorio en GitHub
+3. Pulsa el botón **Fork** que aparece arriba a la derecha, junto al nombre del repositorio
+4. En la pantalla que aparece, deja el nombre como está y pulsa **Create fork**
+
+GitHub copia todo el repositorio en tu cuenta. A partir de ahí trabajas sobre tu copia, no sobre la original. El código y el workflow de GitHub Actions ya están incluidos — no hay que configurar nada más de lo que se describe en los pasos siguientes.
+
+> El repo puede ser **privado** (tienes 2000 min/mes gratis de Actions) o **público** (ilimitado).
 
 ---
 
@@ -65,17 +64,47 @@ Valor: el ID de tu Google Sheet (los caracteres entre `/d/` y `/edit` en la URL)
 ### `PERFIL_URL` (opcional)
 Solo si quieres usarlo con otro ayuntamiento distinto de Vélez-Málaga.
 
-#### Cómo obtener la URL de tu ayuntamiento
+#### Cómo obtener el enlace directo del Perfil del Contratante
 
-1. Ve a [contrataciondelestado.es](https://contrataciondelestado.es)
-2. **Perfil Contratante → Buscar perfiles**
-3. En "Organización contratante" → Seleccionar → Sector Público → Entidades Locales → tu provincia → Ayuntamientos → selecciona el tuyo → Añadir
-4. Pulsa **Buscar** y entra en el órgano principal (normalmente "Junta de Gobierno del Ayuntamiento de...")
-5. Pestaña **Perfil del Contratante** → sección **Datos Generales**
-6. Localiza el campo **"Enlace directo vía hiperenlace"**
-7. Clic derecho sobre el enlace → **Copiar dirección del enlace**
+El programa necesita la URL del campo **"Enlace directo vía hiperenlace"** dentro de la Plataforma de Contratación del Sector Público.
 
-> ⚠️ Usa siempre el campo "Enlace directo vía hiperenlace", no la URL del navegador.
+**Paso 1 — Acceder al buscador de perfiles**
+
+Entrar en [contrataciondelestado.es](https://contrataciondelestado.es) e ir a:
+
+**Perfil Contratante → Buscar perfiles**
+
+**Paso 2 — Seleccionar el ayuntamiento**
+
+En el selector de **Organización contratante**:
+
+1. Pulsar **Seleccionar**
+2. Desplegar: Sector Público → Entidades Locales → tu comunidad → tu provincia → Ayuntamientos
+3. Seleccionar tu ayuntamiento y pulsar **Añadir**
+
+**Paso 3 — Realizar la búsqueda**
+
+Pulsar **Buscar**. Aparecerá una tabla con los órganos de contratación. Seleccionar el órgano principal, normalmente:
+
+**Junta de Gobierno del Ayuntamiento de [Municipio]**
+
+**Paso 4 — Abrir el Perfil del Contratante**
+
+Dentro del órgano de contratación, pulsar la pestaña **Perfil del Contratante** → sección **Datos Generales**.
+
+**Paso 5 — Copiar el enlace directo**
+
+Localizar el campo **"Enlace directo vía hiperenlace"**, hacer clic derecho sobre el enlace y seleccionar **Copiar dirección del enlace**.
+
+> ⚠️ No usar la URL del navegador. Usar siempre el campo "Enlace directo vía hiperenlace", que es la referencia permanente del perfil.
+
+La URL obtenida tendrá este aspecto:
+
+```
+https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&idBp=XXXXXX%3D%3D
+```
+
+Pégala tal cual, sin modificar ningún carácter.
 
 **Con GitHub Actions:** Settings → Secrets → Actions → añade `PERFIL_URL` con esa URL
 
@@ -117,6 +146,34 @@ Para cambiarlo, edita la línea `cron:` en `.github/workflows/update_sheet.yml`:
 # El 1 de cada mes
 - cron: '0 3 1 * *'
 ```
+
+---
+
+## Cargar años anteriores
+
+Por defecto el scraper solo recoge el año en curso. Para rellenar años históricos hay que ejecutarlo manualmente con las variables `FECHA_DESDE`, `FECHA_HASTA` y `SHEET_NAME`.
+
+**Linux/Mac:**
+```bash
+export SPREADSHEET_ID="tu-id"
+export GOOGLE_CREDENTIALS="$(cat credenciales.json)"
+export FECHA_DESDE="01-01-2023"
+export FECHA_HASTA="31-12-2023"
+export SHEET_NAME="Contratos 2023"
+python scraper.py
+```
+
+**fish shell:**
+```bash
+set -x SPREADSHEET_ID "tu-id"
+set -x GOOGLE_CREDENTIALS (cat credenciales.json)
+set -x FECHA_DESDE "01-01-2023"
+set -x FECHA_HASTA "31-12-2023"
+set -x SHEET_NAME "Contratos 2023"
+python scraper.py
+```
+
+Repite el proceso cambiando el año para cada pestaña que quieras generar (2018, 2019, 2020...). Cada ejecución crea la pestaña si no existe, o la sobreescribe si ya está.
 
 ---
 

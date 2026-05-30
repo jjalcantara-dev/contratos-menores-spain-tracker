@@ -23,10 +23,23 @@ La ley prohíbe expresamente fraccionar contratos para eludir estos límites (ar
 
 ## ¿Cómo funciona?
 
+**Modo automático (GitHub Actions):**
+
 1. GitHub Actions ejecuta el scraper cada domingo a la 1:00 AM
 2. El script navega con Firefox headless por [contrataciondelestado.es](https://contrataciondelestado.es)
 3. Extrae todos los contratos del año en curso
 4. Borra la hoja y reescribe los datos desde cero (sin duplicados)
+
+**Modo local (sin configurar nada):**
+
+Necesitas Python, Firefox y ejecutar:
+
+```bash
+pip install selenium webdriver-manager openpyxl
+python scraper_xlsx.py
+```
+
+Genera `output/contratos_AÑO.xlsx` y `output/contratos_AÑO.log` directamente en tu máquina, sin necesidad de Google Sheets ni GitHub.
 
 ## Datos
 
@@ -40,7 +53,7 @@ La ley prohíbe expresamente fraccionar contratos para eludir estos límites (ar
 
 ## Usar con otro ayuntamiento
 
-Si quieres replicar esto con tu municipio, sigue los pasos del [**SETUP.md →**](SETUP.md): crear una cuenta de servicio en Google Cloud, configurar el Google Sheet y añadir los secretos en GitHub Actions.
+Para probarlo rápido en local con tu municipio, solo necesitas la URL de su perfil de contratante y ejecutar `scraper_xlsx.py`. Para la versión automatizada con Google Sheets y GitHub Actions, sigue los pasos del [**SETUP.md →**](SETUP.md).
 
 ## Fuente de datos
 

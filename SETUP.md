@@ -62,6 +62,35 @@ Contenido: el JSON completo del archivo descargado en el Paso 1.
 ### `SPREADSHEET_ID`
 Valor: el ID de tu Google Sheet (los caracteres entre `/d/` y `/edit` en la URL)
 
+### `PERFIL_URL` (opcional)
+Solo si quieres usarlo con otro ayuntamiento distinto de Vélez-Málaga.
+
+#### Cómo obtener la URL de tu ayuntamiento
+
+1. Ve a [contrataciondelestado.es](https://contrataciondelestado.es)
+2. **Perfil Contratante → Buscar perfiles**
+3. En "Organización contratante" → Seleccionar → Sector Público → Entidades Locales → tu provincia → Ayuntamientos → selecciona el tuyo → Añadir
+4. Pulsa **Buscar** y entra en el órgano principal (normalmente "Junta de Gobierno del Ayuntamiento de...")
+5. Pestaña **Perfil del Contratante** → sección **Datos Generales**
+6. Localiza el campo **"Enlace directo vía hiperenlace"**
+7. Clic derecho sobre el enlace → **Copiar dirección del enlace**
+
+> ⚠️ Usa siempre el campo "Enlace directo vía hiperenlace", no la URL del navegador.
+
+**Con GitHub Actions:** Settings → Secrets → Actions → añade `PERFIL_URL` con esa URL
+
+**En local (Linux/Mac):**
+```bash
+export PERFIL_URL="URL_COPIADA"
+python scraper.py
+```
+
+**En local (fish shell):**
+```bash
+set -x PERFIL_URL "URL_COPIADA"
+python scraper.py
+```
+
 ---
 
 ## Paso 5 — Verificar que funciona

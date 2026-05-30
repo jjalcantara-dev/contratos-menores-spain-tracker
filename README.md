@@ -32,6 +32,17 @@ Los contratos menores son adjudicaciones directas sin licitación pública de ha
 | Proyectos | Detalle de cada contrato con su importe |
 | Total (€) | Suma total adjudicada |
 
+## Usar con otro ayuntamiento
+
+1. Busca tu ayuntamiento en [contrataciondelestado.es](https://contrataciondelestado.es)
+2. Entra en su perfil de contratante y copia la URL
+3. Añade el secreto `PERFIL_URL` en GitHub con esa URL
+
+O en local:
+```bash
+set -x PERFIL_URL "https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&idBp=TU_ID"
+```
+
 ## Fuente de datos
 
 [Plataforma de Contratación del Sector Público](https://contrataciondelestado.es) — Perfil del contratante del Ayuntamiento de Vélez-Málaga.

@@ -30,9 +30,10 @@ from google.oauth2.service_account import Credentials
 # Configuración
 # ---------------------------------------------------------------------------
 
-URL_PERFIL = (
-    "https://contrataciondelestado.es/wps/poc"
-    "?uri=deeplink:perfilContratante&idBp=VW8fwBSzF%2FEQK2TEfXGy%2BA%3D%3D"
+# URL del perfil del contratante — cambia idBp para otro ayuntamiento
+URL_PERFIL = os.environ.get(
+    "PERFIL_URL",
+    "https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&idBp=VW8fwBSzF%2FEQK2TEfXGy%2BA%3D%3D"
 )
 
 FECHA_DESDE    = os.environ.get("FECHA_DESDE", f"01-01-{date.today().year}")

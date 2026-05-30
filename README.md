@@ -4,7 +4,9 @@ Este proyecto nació por curiosidad en Vélez-Málaga, al descubrir la cantidad 
 
 Scraper automático que recoge todos los contratos menores adjudicados por un ayuntamiento desde la plataforma pública de contratación del Estado y los publica en una hoja de cálculo actualizada semanalmente.
 
-## 📊 Ver los datos
+## 📊 Ver los datos — Vélez-Málaga
+
+> Este Sheet contiene los datos del Ayuntamiento de Vélez-Málaga. Si usas el proyecto con otro municipio, este enlace no te corresponde.
 
 [**Abrir Google Sheet →**](https://docs.google.com/spreadsheets/d/1oRhwJBzAx8C5-LALaJ7hK4IEMN5kK4CUr_VoTM3ZH64)
 
@@ -36,18 +38,11 @@ Los contratos menores son adjudicaciones directas sin licitación pública de ha
 
 ## Usar con otro ayuntamiento
 
-1. Busca tu ayuntamiento en [contrataciondelestado.es](https://contrataciondelestado.es)
-2. Entra en su perfil de contratante y copia la URL
-3. Añade el secreto `PERFIL_URL` en GitHub con esa URL
-
-O en local:
-```bash
-set -x PERFIL_URL "https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&idBp=TU_ID"
-```
+Si quieres replicar esto con tu municipio, sigue los pasos del [**SETUP.md →**](SETUP.md): crear una cuenta de servicio en Google Cloud, configurar el Google Sheet y añadir los secretos en GitHub Actions.
 
 ## Fuente de datos
 
-[Plataforma de Contratación del Sector Público](https://contrataciondelestado.es) — Perfil del contratante del Ayuntamiento de Vélez-Málaga.
+[Plataforma de Contratación del Sector Público](https://contrataciondelestado.es) — [Perfil del contratante del Ayuntamiento de Vélez-Málaga](https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&idBp=VW8fwBSzF%2FEQK2TEfXGy%2BA%3D%3D).
 
 ---
 

@@ -1,6 +1,8 @@
-# Contratos Menores — Vélez-Málaga
+# Contratos Menores — Spain Tracker
 
-Scraper automático que recoge todos los contratos menores adjudicados por el **Ayuntamiento de Vélez-Málaga** desde la plataforma pública de contratación del Estado y los publica en una hoja de cálculo actualizada semanalmente.
+Este proyecto nació por curiosidad en Vélez-Málaga, al descubrir la cantidad de contratos menores que se adjudican cada semana. A partir de ahí surgió la idea de automatizarlo y hacerlo extensible para que cualquiera pueda usarlo con su propio municipio.
+
+Scraper automático que recoge todos los contratos menores adjudicados por un ayuntamiento desde la plataforma pública de contratación del Estado y los publica en una hoja de cálculo actualizada semanalmente.
 
 ## 📊 Ver los datos
 

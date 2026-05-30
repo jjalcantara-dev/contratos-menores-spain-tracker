@@ -17,7 +17,9 @@ Scraper automático que recoge todos los contratos menores adjudicados por un ay
 
 ## ¿Qué son los contratos menores?
 
-Los contratos menores son adjudicaciones directas sin licitación pública de hasta 15.000 € en servicios y 40.000 € en obras. Son de obligatoria publicación en la plataforma de contratación del Estado.
+Según la [Ley 9/2017 de Contratos del Sector Público](https://www.boe.es/buscar/act.php?id=BOE-A-2017-12902), son contratos de valor estimado (sin IVA) inferior a **40.000 € en obras** o **15.000 € en servicios y suministros** (art. 118). Pueden adjudicarse directamente a cualquier empresario sin licitación pública (art. 131.3).
+
+La ley prohíbe expresamente fraccionar contratos para eludir estos límites (art. 99.2), y la Instrucción 1/2019 de la OIReScon exige solicitar al menos tres presupuestos como medida antifraude.
 
 ## ¿Cómo funciona?
 

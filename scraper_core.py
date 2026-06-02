@@ -14,6 +14,69 @@ FECHA_DESDE = os.environ.get("FECHA_DESDE", f"01-01-{date.today().year}")
 FECHA_HASTA = os.environ.get("FECHA_HASTA", "")
 YEAR        = os.environ.get("SHEET_NAME", str(date.today().year))
 
+
+def agregar_por_año(todas_filas):
+    """
+    Recibe una lista de registros {año, empresa, num_contratos, proyectos, total}
+    y devuelve dos dicts de agregación reutilizables por xlsx y Sheets.
+
+    Returns:
+        año_resumen:    {year: {total, contratos, adjudicatarios}}
+        empresa_totals: {empresa: {total, contratos, años}}
+    """
+    año_resumen    = {}
+    empresa_totals = {}
+
+    for f in todas_filas:
+        year = f["año"]
+        if year not in año_resumen:
+            año_resumen[year] = {"total": 0.0, "contratos": 0, "adjudicatarios": 0}
+        año_resumen[year]["total"]          += f["total"]
+        año_resumen[year]["contratos"]      += f["num_contratos"]
+        año_resumen[year]["adjudicatarios"] += 1
+
+        e = f["empresa"]
+        if e not in empresa_totals:
+            empresa_totals[e] = {"total": 0.0, "contratos": 0, "años": set()}
+        empresa_totals[e]["total"]     += f["total"]
+        empresa_totals[e]["contratos"] += f["num_contratos"]
+        empresa_totals[e]["años"].add(year)
+
+    return año_resumen, empresa_totals
+
+
+def parse_años(args):
+    """
+    Parsea argumentos CLI para determinar qué años scrapear.
+
+    Sin args       → [año actual]
+    "2024"         → [2024]
+    "2012-2025"    → [2012, 2013, ..., 2025]
+    "2012" "2025"  → [2012, 2013, ..., 2025]
+    """
+    if not args:
+        return [int(YEAR)]
+    if len(args) == 1:
+        m = re.match(r"^(\d{4})-(\d{4})$", args[0])
+        if m:
+            start, end = int(m.group(1)), int(m.group(2))
+            if start > end:
+                sys.exit(f"Error: año inicio ({start}) > año fin ({end})")
+            return list(range(start, end + 1))
+        try:
+            return [int(args[0])]
+        except ValueError:
+            sys.exit(f"Error: argumento no válido '{args[0]}'. Usa: año, año-año, o año año")
+    if len(args) == 2:
+        try:
+            start, end = int(args[0]), int(args[1])
+        except ValueError:
+            sys.exit("Error: los argumentos deben ser años (ej. 2012 2025)")
+        if start > end:
+            sys.exit(f"Error: año inicio ({start}) > año fin ({end})")
+        return list(range(start, end + 1))
+    sys.exit("Uso: python scraper_xlsx.py [año_inicio] [año_fin]")
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
@@ -99,6 +162,8 @@ def scrape(url_perfil, fecha_desde, fecha_hasta=""):
                     if not celda_importe:
                         continue
 
+                    # La plataforma muestra importes sin separador de miles ("88501,34 €" o "88501.34 €").
+                    # El patrón captura dígitos y comas; replace(",","") convierte la coma decimal.
                     m = re.search(r'[\d,]+(?:\.\d+)?', celda_importe[0].text.strip())
                     if not m:
                         continue

@@ -10,9 +10,9 @@ Scraper automático que recoge todos los contratos menores adjudicados por un ay
 
 [**Abrir Google Sheet →**](https://docs.google.com/spreadsheets/d/1oRhwJBzAx8C5-LALaJ7hK4IEMN5kK4CUr_VoTM3ZH64)
 
-- Una pestaña por año (2018, 2019, ... 2026)
-- Ranking de adjudicatarios ordenado por importe total
-- Detalle de cada contrato por empresa
+- **Contratos {año}** — ranking de adjudicatarios por año (2018, 2019, ... 2026)
+- **Estadísticas** — gráficas de gasto, contratos, adjudicatarios y top 10 histórico
+- **Registro Total** — unión de todos los años en una sola tabla
 - Actualización automática cada domingo
 
 ## ¿Qué son los contratos menores?
@@ -39,7 +39,7 @@ pip install selenium webdriver-manager openpyxl
 python scraper_xlsx.py
 ```
 
-Genera `output/contratos_AÑO.xlsx` y `output/contratos_AÑO.log` directamente en tu máquina, sin necesidad de Google Sheets ni GitHub.
+Genera `output/contratos.xlsx` con pestañas por año, Estadísticas y Registro Total. Para cargar varios años de una vez: `python scraper_xlsx.py 2012 2025`.
 
 ## Datos
 

@@ -174,29 +174,22 @@ Para cambiarlo, edita la línea `cron:` en `.github/workflows/update_sheet.yml`:
 
 ## Cargar años anteriores
 
-Por defecto el scraper solo recoge el año en curso. Para rellenar años históricos ejecuta manualmente con las variables `FECHA_DESDE`, `FECHA_HASTA` y `SHEET_NAME`.
-
-> `SHEET_NAME` es el año en ambos casos (`"2023"`, no `"Contratos 2023"`). El prefijo se añade automáticamente.
+Por defecto el scraper solo recoge el año en curso. Para rellenar años históricos, pasa el rango directamente como argumento. Los años sin datos publicados se omiten automáticamente con un aviso, sin abortar el proceso.
 
 **Opción A — Local con xlsx (sin credenciales de Google):**
 
 ```bash
-# Linux/Mac
-export FECHA_DESDE="01-01-2023"
-export FECHA_HASTA="31-12-2023"
-export SHEET_NAME="2023"
-python scraper_xlsx.py
+# Un año concreto
+python scraper_xlsx.py 2023
+
+# Varios años de golpe
+python scraper_xlsx.py 2012 2025
+
+# Misma sintaxis con guion
+python scraper_xlsx.py 2012-2025
 ```
 
-```bash
-# fish shell
-set -x FECHA_DESDE "01-01-2023"
-set -x FECHA_HASTA "31-12-2023"
-set -x SHEET_NAME "2023"
-python scraper_xlsx.py
-```
-
-Genera `output/contratos_2023.xlsx`. Repite cambiando el año.
+Cada año se escribe como una pestaña en `output/contratos.xlsx`. Si el archivo ya existe se actualiza; si no, se crea. Al terminar, las pestañas **Registro Total** y **Estadísticas** se regeneran automáticamente con todos los años presentes.
 
 **Opción B — Directo a Google Sheets:**
 
@@ -204,23 +197,21 @@ Genera `output/contratos_2023.xlsx`. Repite cambiando el año.
 # Linux/Mac
 export SPREADSHEET_ID="tu-id"
 export GOOGLE_CREDENTIALS="$(cat credenciales.json)"
-export FECHA_DESDE="01-01-2023"
-export FECHA_HASTA="31-12-2023"
-export SHEET_NAME="2023"
-python scraper.py
+python scraper.py 2023
+python scraper.py 2012 2025
 ```
 
 ```bash
 # fish shell
 set -x SPREADSHEET_ID "tu-id"
 set -x GOOGLE_CREDENTIALS (cat credenciales.json)
-set -x FECHA_DESDE "01-01-2023"
-set -x FECHA_HASTA "31-12-2023"
-set -x SHEET_NAME "2023"
-python scraper.py
+python scraper.py 2023
+python scraper.py 2012 2025
 ```
 
-Cada ejecución crea la pestaña si no existe, o la sobreescribe si ya está.
+Cada año crea o sobreescribe su pestaña. Al terminar, **Registro Total** y **Estadísticas** se regeneran con todos los años disponibles en el Sheet.
+
+> **Nota:** el método antiguo de variables de entorno (`FECHA_DESDE`, `FECHA_HASTA`, `SHEET_NAME`) sigue funcionando para casos personalizados (rangos de fechas parciales, etc.).
 
 ---
 

@@ -140,6 +140,8 @@ def _source_range(sheet_id, start_row, end_row, start_col, end_col):
 
 def _chart_request(title, chart_type, sheet_id, cat_range, series_range,
                    anchor_row, anchor_col, width=500, height=320):
+    # BAR (horizontal) usa BOTTOM_AXIS; COLUMN/LINE usan LEFT_AXIS
+    target_axis = "BOTTOM_AXIS" if chart_type == "BAR" else "LEFT_AXIS"
     return {
         "addChart": {
             "chart": {
@@ -151,7 +153,7 @@ def _chart_request(title, chart_type, sheet_id, cat_range, series_range,
                         "domains": [{"domain": {"sourceRange": {"sources": [cat_range]}}}],
                         "series": [{
                             "series": {"sourceRange": {"sources": [series_range]}},
-                            "targetAxis": "LEFT_AXIS",
+                            "targetAxis": target_axis,
                         }],
                         "headerCount": 1,
                     },
@@ -195,7 +197,7 @@ def escribir_en_sheets(ws, ranking, total_global, paginas_con_error):
     todas = meta + [[]] + cabecera + filas_datos + [[]] + fila_total
 
     ws.clear()
-    ws.update(range_name="A1", values=todas, value_input_option="USER_ENTERED")
+    ws.update(values=todas, range_name="A1", value_input_option="USER_ENTERED")
 
     fila_cabecera  = 3
     fila_total_idx = 3 + len(filas_datos) + 2

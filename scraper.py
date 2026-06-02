@@ -373,11 +373,9 @@ def escribir_registro_total(sh):
 # ---------------------------------------------------------------------------
 
 def _reordenar_tabs_sheets(sh):
-    """Ordena: año_actual → Estadísticas → años anteriores (desc) → Registro Total"""
-    all_ws   = sh.worksheets()
-    ws_map   = {ws.title: ws for ws in all_ws}
-    hoy_año  = str(date.today().year)
-    tab_actual = f"Contratos {hoy_año}"
+    """Ordena: Estadísticas → Registro Total → años desc (2026, 2025, ...)"""
+    all_ws  = sh.worksheets()
+    ws_map  = {ws.title: ws for ws in all_ws}
 
     year_titles = sorted(
         [t for t in ws_map if re.match(r"^Contratos \d{4}$", t)],
@@ -385,20 +383,13 @@ def _reordenar_tabs_sheets(sh):
     )
 
     desired = []
-    if tab_actual in year_titles:
-        desired.append(tab_actual)
-        year_titles = [t for t in year_titles if t != tab_actual]
-    elif year_titles:
-        desired.append(year_titles[0])
-        year_titles = year_titles[1:]
-
     if "Estadísticas" in ws_map:
         desired.append("Estadísticas")
     if "Registro Total" in ws_map:
         desired.append("Registro Total")
     desired.extend(year_titles)
 
-    ordered = [ws_map[t] for t in desired if t in ws_map]
+    ordered  = [ws_map[t] for t in desired if t in ws_map]
     ordered += [ws for ws in all_ws if ws.title not in set(desired)]
     sh.reorder_worksheets(ordered)
 
@@ -472,6 +463,20 @@ def escribir_estadisticas(sh):
                                    verde_claro if i % 2 == 0 else BLANCO, n_cols=4))
     for idx, px in [(0, 250), (1, 130), (2, 100), (3, 150)]:
         requests.append(_col_width(sheet_id, idx, px))
+
+    # Formato euro en columna B de ambas tablas
+    for start, end in [(fila_t1_cab, fila_t1_data_end), (fila_t2_cab, fila_t2_data_end)]:
+        requests.append({"repeatCell": {
+            "range": {
+                "sheetId":          sheet_id,
+                "startRowIndex":    start,    # 1-based como 0-based → salta la cabecera
+                "endRowIndex":      end,
+                "startColumnIndex": 1,
+                "endColumnIndex":   2,
+            },
+            "cell": {"userEnteredFormat": {"numberFormat": {"type": "NUMBER", "pattern": '#,##0.00 "€"'}}},
+            "fields": "userEnteredFormat.numberFormat",
+        }})
 
     t1_cab_0      = fila_t1_cab - 1
     t1_data_end_0 = fila_t1_data_end

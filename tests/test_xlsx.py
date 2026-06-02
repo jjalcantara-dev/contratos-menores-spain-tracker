@@ -203,10 +203,11 @@ def test_estadisticas_antes_que_registro_total():
     assert names.index("Estadísticas") < names.index("Registro Total")
 
 
-def test_registro_total_es_tercero(tmp_path, monkeypatch):
-    """Registro Total debe ser la tercera pestaña: año_actual → Estadísticas → Registro Total → años anteriores."""
+def test_orden_estadisticas_registro_años(tmp_path, monkeypatch):
+    """Orden: Estadísticas → Registro Total → años desc (2025, 2024, ...)"""
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(scraper_xlsx, "NOMBRE_XLSX", scraper_xlsx.OUTPUT_DIR / "contratos.xlsx")
+
     monkeypatch.setattr(scraper_xlsx, "YEAR", "2024")
     scraper_xlsx.escribir_xlsx(
         [("Empresa D", {"total": 1000.0, "proyectos": [("X", 1000.0)]})], 1000.0, []
@@ -216,8 +217,10 @@ def test_registro_total_es_tercero(tmp_path, monkeypatch):
 
     wb = load_workbook("output/contratos.xlsx")
     names = wb.sheetnames
-    assert names.index("Registro Total") == 2
-    assert names.index("Estadísticas") < names.index("Registro Total")
+    assert names[0] == "Estadísticas"
+    assert names[1] == "Registro Total"
+    assert names[2] == "Contratos 2025"
+    assert names[3] == "Contratos 2024"
 
 
 # ---------------------------------------------------------------------------

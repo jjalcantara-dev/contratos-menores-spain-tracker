@@ -94,24 +94,14 @@ def _open_or_create_wb():
 
 
 def _reordenar_tabs(wb):
-    """Ordena: año_actual → Estadísticas → años anteriores (desc) → Registro Total"""
-    names     = wb.sheetnames
-    hoy_año   = str(date.today().year)
-    tab_actual = f"Contratos {hoy_año}"
-
+    """Ordena: Estadísticas → Registro Total → años desc (2026, 2025, ...)"""
+    names = wb.sheetnames
     year_names = sorted(
         [n for n in names if re.match(r"^Contratos \d{4}$", n)],
         reverse=True,
     )
 
     desired = []
-    if tab_actual in year_names:
-        desired.append(tab_actual)
-        year_names = [n for n in year_names if n != tab_actual]
-    elif year_names:
-        desired.append(year_names[0])  # más reciente disponible
-        year_names = year_names[1:]
-
     if "Estadísticas" in names:
         desired.append("Estadísticas")
     if "Registro Total" in names:
@@ -316,6 +306,12 @@ def actualizar_estadisticas(wb):
 
     for col, ancho in [(1, 40), (2, 16), (3, 16), (4, 20)]:
         ws.column_dimensions[get_column_letter(col)].width = ancho
+
+    euro_fmt = '#,##0.00 "€"'
+    for row_idx in range(fila_cab_años + 1, fila_fin_años + 1):
+        ws.cell(row_idx, 2).number_format = euro_fmt
+    for row_idx in range(fila_cab_top + 1, fila_fin_top + 1):
+        ws.cell(row_idx, 2).number_format = euro_fmt
 
     cats_años = Reference(ws, min_col=1, min_row=fila_cab_años + 1, max_row=fila_fin_años)
 

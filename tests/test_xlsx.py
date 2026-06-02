@@ -203,8 +203,8 @@ def test_estadisticas_antes_que_registro_total():
     assert names.index("Estadísticas") < names.index("Registro Total")
 
 
-def test_registro_total_es_ultimo(tmp_path, monkeypatch):
-    """Registro Total debe ser siempre la última pestaña."""
+def test_registro_total_es_tercero(tmp_path, monkeypatch):
+    """Registro Total debe ser la tercera pestaña: año_actual → Estadísticas → Registro Total → años anteriores."""
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(scraper_xlsx, "NOMBRE_XLSX", scraper_xlsx.OUTPUT_DIR / "contratos.xlsx")
     monkeypatch.setattr(scraper_xlsx, "YEAR", "2024")
@@ -215,7 +215,9 @@ def test_registro_total_es_ultimo(tmp_path, monkeypatch):
     scraper_xlsx.escribir_xlsx(RANKING, TOTAL_GLOBAL, [])
 
     wb = load_workbook("output/contratos.xlsx")
-    assert wb.sheetnames[-1] == "Registro Total"
+    names = wb.sheetnames
+    assert names.index("Registro Total") == 2
+    assert names.index("Estadísticas") < names.index("Registro Total")
 
 
 # ---------------------------------------------------------------------------

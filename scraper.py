@@ -355,6 +355,16 @@ def escribir_registro_total(sh):
         "cell": {"userEnteredFormat": {"numberFormat": {"type": "NUMBER", "pattern": '#,##0.00 "€"'}}},
         "fields": "userEnteredFormat.numberFormat",
     }})
+    requests.append({"setBasicFilter": {
+        "filter": {
+            "range": {
+                "sheetId":          sheet_id,
+                "startRowIndex":    fila_cab - 1,
+                "startColumnIndex": 0,
+                "endColumnIndex":   5,
+            }
+        }
+    }})
     sh.batch_update({"requests": requests})
     log.info(f"Tab 'Registro Total' actualizado: {len(todas_filas)} registros de {len(year_sheets)} año(s)")
 
@@ -384,9 +394,9 @@ def _reordenar_tabs_sheets(sh):
 
     if "Estadísticas" in ws_map:
         desired.append("Estadísticas")
-    desired.extend(year_titles)
     if "Registro Total" in ws_map:
         desired.append("Registro Total")
+    desired.extend(year_titles)
 
     ordered = [ws_map[t] for t in desired if t in ws_map]
     ordered += [ws for ws in all_ws if ws.title not in set(desired)]

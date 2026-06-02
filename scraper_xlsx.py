@@ -114,9 +114,9 @@ def _reordenar_tabs(wb):
 
     if "Estadísticas" in names:
         desired.append("Estadísticas")
-    desired.extend(year_names)
     if "Registro Total" in names:
         desired.append("Registro Total")
+    desired.extend(year_names)
 
     sheet_map  = {ws.title: ws for ws in wb.worksheets}
     wb._sheets = [sheet_map[n] for n in desired if n in sheet_map]
@@ -242,6 +242,7 @@ def actualizar_registro_total(wb):
     for col, ancho in [(1, 8), (2, 40), (3, 14), (4, 80), (5, 16)]:
         ws.column_dimensions[get_column_letter(col)].width = ancho
     ws.freeze_panes = f"A{fila_cab + 1}"
+    ws.auto_filter.ref = f"A{fila_cab}:E{fila_cab + len(todas_filas)}"
 
     log.info(f"Tab 'Registro Total' actualizado: {len(todas_filas)} registros de {len(year_tabs)} año(s)")
 

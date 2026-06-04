@@ -9,13 +9,19 @@ pip install selenium webdriver-manager openpyxl
 python scraper_xlsx.py
 ```
 
-Genera `output/contratos_AÑO.xlsx` y `output/contratos_AÑO.log`. Para otro municipio añade `PERFIL_URL` (ver [Cómo obtener la URL](#cómo-obtener-el-enlace-directo-del-perfil-del-contratante)). Para otro año, consulta [Cargar años anteriores](#cargar-años-anteriores).
+Genera `output/contratos.xlsx` con una pestaña por año, **Estadísticas** (4 gráficas) y **Registro Total** (unión histórica). También genera `output/contratos_AÑO.log`. Para otro municipio añade `PERFIL_URL` (ver [Cómo obtener la URL](#cómo-obtener-el-enlace-directo-del-perfil-del-contratante)). Para cargar varios años de golpe, consulta [Cargar años anteriores](#cargar-años-anteriores).
 
 ---
 
 ## Qué hace la automatización con GitHub Actions
 
-Cada domingo a las 3:00 AM (hora UTC), GitHub Actions ejecuta el scraper automáticamente, borra la hoja del Google Sheet y la reescribe con todos los contratos del año en curso. Sin duplicados, sin intervención manual.
+Cada domingo a las 3:00 AM (hora UTC), GitHub Actions ejecuta el scraper automáticamente y actualiza el Google Sheet:
+
+1. Borra y reescribe la pestaña del año en curso con los contratos más recientes
+2. Regenera **Registro Total** (unión de todos los años)
+3. Regenera **Estadísticas** (4 gráficas históricas)
+
+Sin duplicados, sin intervención manual. Los nombres de empresa se normalizan automáticamente (ej. `AXAPLAY, S.L.` y `AXAPLAY S.L.` se agrupan como el mismo adjudicatario).
 
 ---
 

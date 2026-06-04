@@ -27,8 +27,10 @@ La ley prohíbe expresamente fraccionar contratos para eludir estos límites (ar
 
 1. GitHub Actions ejecuta el scraper cada domingo a la 1:00 AM
 2. El script navega con Firefox headless por [contrataciondelestado.es](https://contrataciondelestado.es)
-3. Extrae todos los contratos del año en curso
-4. Borra la hoja y reescribe los datos desde cero (sin duplicados)
+3. Extrae todos los contratos del año en curso y actualiza su pestaña
+4. Regenera **Registro Total** y **Estadísticas** con el histórico completo
+
+Los nombres de empresa se normalizan automáticamente: `AXAPLAY, S.L.` y `AXAPLAY S.L.` se agrupan como el mismo adjudicatario.
 
 **Modo local (sin configurar nada):**
 
@@ -58,6 +60,17 @@ Para probarlo rápido en local con tu municipio, solo necesitas la URL de su per
 ## Fuente de datos
 
 [Plataforma de Contratación del Sector Público](https://contrataciondelestado.es) — [Perfil del contratante del Ayuntamiento de Vélez-Málaga](https://contrataciondelestado.es/wps/poc?uri=deeplink:perfilContratante&idBp=VW8fwBSzF%2FEQK2TEfXGy%2BA%3D%3D).
+
+## Autor
+
+Creado por **Jesús Jiménez** — [Connect](https://jjalcantara.dev)
+
+- Web: [jjalcantara.dev](https://jjalcantara.dev)
+- LinkedIn: [linkedin.com/in/jjalcantara](https://linkedin.com/in/jjalcantara)
+- GitHub: [github.com/jjalcantara-dev](https://github.com/jjalcantara-dev)
+- Email: [jesusjimalc98@gmail.com](mailto:jesusjimalc98@gmail.com)
+
+Si haces un fork, por favor mantén la atribución al autor original.
 
 ---
 

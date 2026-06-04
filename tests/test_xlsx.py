@@ -24,6 +24,19 @@ def limpiar_archivo(tmp_path, monkeypatch):
     yield
 
 
+@pytest.fixture
+def write_year(monkeypatch, tmp_path):
+    """Escribe un año en contratos.xlsx y devuelve el workbook resultante."""
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(scraper_xlsx, "NOMBRE_XLSX", scraper_xlsx.OUTPUT_DIR / "contratos.xlsx")
+
+    def _write(year: str, ranking: list, total: float = 0.0) -> None:
+        monkeypatch.setattr(scraper_xlsx, "YEAR", year)
+        scraper_xlsx.escribir_xlsx(ranking, total or sum(d["total"] for _, d in ranking), [])
+
+    return _write
+
+
 # ---------------------------------------------------------------------------
 # Tab del año
 # ---------------------------------------------------------------------------
@@ -137,20 +150,10 @@ def test_registro_total_fila_total():
     assert ws.cell(ultima_fila, 5).value == round(TOTAL_GLOBAL, 2)
 
 
-def test_registro_total_acumula_dos_años(tmp_path, monkeypatch):
+def test_registro_total_acumula_dos_años(write_year):
     """Al escribir dos años, Registro Total debe tener datos de ambos."""
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(scraper_xlsx, "NOMBRE_XLSX", scraper_xlsx.OUTPUT_DIR / "contratos.xlsx")
-
-    monkeypatch.setattr(scraper_xlsx, "YEAR", "2024")
-    scraper_xlsx.escribir_xlsx(
-        [("Empresa D", {"total": 1000.0, "proyectos": [("X", 1000.0)]})], 1000.0, []
-    )
-
-    monkeypatch.setattr(scraper_xlsx, "YEAR", "2025")
-    scraper_xlsx.escribir_xlsx(
-        [("Empresa E", {"total": 2000.0, "proyectos": [("Y", 2000.0)]})], 2000.0, []
-    )
+    write_year("2024", [("Empresa D", {"total": 1000.0, "proyectos": [("X", 1000.0)]})])
+    write_year("2025", [("Empresa E", {"total": 2000.0, "proyectos": [("Y", 2000.0)]})])
 
     wb = load_workbook("output/contratos.xlsx")
     assert "Contratos 2024" in wb.sheetnames
@@ -203,20 +206,12 @@ def test_estadisticas_antes_que_registro_total():
     assert names.index("Estadísticas") < names.index("Registro Total")
 
 
-def test_orden_estadisticas_registro_años(tmp_path, monkeypatch):
+def test_orden_estadisticas_registro_años(write_year):
     """Orden: Estadísticas → Registro Total → años desc (2025, 2024, ...)"""
-    monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr(scraper_xlsx, "NOMBRE_XLSX", scraper_xlsx.OUTPUT_DIR / "contratos.xlsx")
+    write_year("2024", [("Empresa D", {"total": 1000.0, "proyectos": [("X", 1000.0)]})])
+    write_year("2025", RANKING, TOTAL_GLOBAL)
 
-    monkeypatch.setattr(scraper_xlsx, "YEAR", "2024")
-    scraper_xlsx.escribir_xlsx(
-        [("Empresa D", {"total": 1000.0, "proyectos": [("X", 1000.0)]})], 1000.0, []
-    )
-    monkeypatch.setattr(scraper_xlsx, "YEAR", "2025")
-    scraper_xlsx.escribir_xlsx(RANKING, TOTAL_GLOBAL, [])
-
-    wb = load_workbook("output/contratos.xlsx")
-    names = wb.sheetnames
+    names = load_workbook("output/contratos.xlsx").sheetnames
     assert names[0] == "Estadísticas"
     assert names[1] == "Registro Total"
     assert names[2] == "Contratos 2025"

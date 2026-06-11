@@ -226,7 +226,21 @@ def init_driver() -> webdriver.Firefox:
     options.add_argument("--width=1920")
     options.add_argument("--height=1080")
     service = Service(GeckoDriverManager().install())
-    return webdriver.Firefox(service=service, options=options)
+    driver = webdriver.Firefox(service=service, options=options)
+    driver.set_page_load_timeout(120)
+    return driver
+
+
+def _get_with_retry(driver, url: str, max_intentos: int = 3, espera: int = 15) -> None:
+    for intento in range(1, max_intentos + 1):
+        try:
+            driver.get(url)
+            return
+        except Exception as exc:
+            log.warning(f"Intento {intento}/{max_intentos} fallido al cargar {url}: {exc}")
+            if intento == max_intentos:
+                raise
+            time.sleep(espera)
 
 
 def scrape(url_perfil: str, fecha_desde: str, fecha_hasta: str = "") -> tuple:
@@ -241,7 +255,7 @@ def scrape(url_perfil: str, fecha_desde: str, fecha_hasta: str = "") -> tuple:
     wait   = WebDriverWait(driver, 20)
 
     try:
-        driver.get(url_perfil)
+        _get_with_retry(driver, url_perfil)
 
         tab = wait.until(EC.element_to_be_clickable((
             By.XPATH,
